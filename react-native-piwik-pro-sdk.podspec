@@ -18,4 +18,7 @@ Pod::Spec.new do |s|
   
 
   s.dependency "React"
+  # Cannot upgrade to latest versions
+  # See: https://github.com/PiwikPRO/piwik-pro-sdk-framework-ios/issues/2
+  s.dependency 'PiwikPROSDK', '1.0.1'
 end
