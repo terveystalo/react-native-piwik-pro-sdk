@@ -20,7 +20,18 @@ RCT_REMAP_METHOD(init,
   }
 
   dispatch_async(dispatch_get_main_queue(), ^{
-    [PiwikTracker sharedInstanceWithSiteID:siteID baseURL:[NSURL URLWithString:baseURL]];
+    PiwikTracker* tracker = [PiwikTracker sharedInstanceWithSiteID:siteID baseURL:[NSURL URLWithString:baseURL]];
+
+    if (options[@"applicationDomain"] != nil) {
+      tracker.appName = options[@"applicationDomain"];
+    } else {
+      tracker.appName = [[NSBundle mainBundle] bundleIdentifier];
+    }
+
+    if (options[@"dispatchInterval"] != nil) {
+      tracker.dispatchInterval = [options[@"dispatchInterval"] doubleValue];
+    }
+
     resolve(nil);
   });
 }

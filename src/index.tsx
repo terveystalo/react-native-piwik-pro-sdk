@@ -2,6 +2,13 @@ import { NativeModules } from 'react-native';
 
 type TrackerOptions = Partial<{
   /**
+   * Domain part of screen view URL sent to Piwik.
+   *
+   * Defaults to package name on Android and bundle identifier on iOS.
+   * Note that the default differs from Piwik iOS SDK default
+   */
+  applicationDomain: string;
+  /**
    * Interval, in seconds, between automatic delivery of tracking events.
    *
    * See:

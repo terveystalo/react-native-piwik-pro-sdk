@@ -26,13 +26,20 @@ class PiwikProSdkModule(reactContext: ReactApplicationContext) : ReactContextBas
         }
 
         try {
-            this.tracker = Piwik.getInstance(this.reactApplicationContext)
-              .newTracker(TrackerConfig.createDefault(baseUrl, siteId))
+            var tracker = Piwik.getInstance(this.reactApplicationContext)
+                .newTracker(TrackerConfig.createDefault(baseUrl, siteId))
 
-            if (options.hasKey("dispatchInterval")) {
-                this.tracker?.dispatchInterval = options.getInt("dispatchInterval").toLong()
+            if (options.hasKey("applicationDomain")) {
+                tracker.setApplicationDomain(options.getString("applicationDomain"))
+            } else {
+                tracker.setApplicationDomain(reactApplicationContext.packageName)
             }
 
+            if (options.hasKey("dispatchInterval")) {
+                tracker.dispatchInterval = options.getInt("dispatchInterval").toLong()
+            }
+
+            this.tracker = tracker
             promise.resolve(null)
         } catch (error: Exception) {
             promise.reject(error)
@@ -43,8 +50,8 @@ class PiwikProSdkModule(reactContext: ReactApplicationContext) : ReactContextBas
     fun trackScreen(path: String, promise: Promise) {
         try {
             TrackHelper.track()
-              .screen(path)
-              .with(this.tracker ?: throw Error("Tracker is not initialized"))
+                .screen(path)
+                .with(this.tracker ?: throw Error("Tracker is not initialized"))
             promise.resolve(null)
         } catch (error: Exception) {
             promise.reject(error)
