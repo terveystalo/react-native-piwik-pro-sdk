@@ -13,6 +13,12 @@ RCT_REMAP_METHOD(init,
                  withResolver:(RCTPromiseResolveBlock)resolve
                  withRejecter:(RCTPromiseRejectBlock)reject)
 {
+  if ([PiwikTracker sharedInstance] != nil) {
+    NSError* error = [NSError errorWithDomain:@"react-native-piwik-pro-sdk" code:0 userInfo:nil];
+    reject(@"already_initialized", @"Tracker already initialized", error);
+    return;
+  }
+
   dispatch_async(dispatch_get_main_queue(), ^{
     [PiwikTracker sharedInstanceWithSiteID:siteID baseURL:[NSURL URLWithString:baseURL]];
     resolve(nil);
@@ -28,7 +34,8 @@ RCT_REMAP_METHOD(trackScreen,
     [[PiwikTracker sharedInstance] sendView:path];
     resolve(nil);
   } @catch (NSException *exception) {
-    reject(exception.name, exception.reason, [[NSError alloc] init]);
+    NSError* error = [NSError errorWithDomain:@"react-native-piwik-pro-sdk" code:0 userInfo:nil];
+    reject(exception.name, exception.reason, error);
   }
 }
 
@@ -47,7 +54,8 @@ RCT_REMAP_METHOD(trackEvent,
      value:optionalArgs[@"value"]];
     resolve(nil);
   } @catch (NSException *exception) {
-    reject(exception.name, exception.reason, [[NSError alloc] init]);
+    NSError* error = [NSError errorWithDomain:@"react-native-piwik-pro-sdk" code:0 userInfo:nil];
+    reject(exception.name, exception.reason, error);
   }
 }
 
@@ -59,7 +67,8 @@ RCT_REMAP_METHOD(dispatch,
     [[PiwikTracker sharedInstance] dispatch];
     resolve(nil);
   } @catch (NSException *exception) {
-    reject(exception.name, exception.reason, [[NSError alloc] init]);
+    NSError* error = [NSError errorWithDomain:@"react-native-piwik-pro-sdk" code:0 userInfo:nil];
+    reject(exception.name, exception.reason, error);
   }
 }
 

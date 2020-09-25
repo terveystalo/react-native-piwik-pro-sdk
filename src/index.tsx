@@ -31,6 +31,7 @@ const PiwikProSdk: PiwikProSdkType = NativeModules.PiwikProSdk;
 
 /**
  * Initialize the SDK. Needs to be called before calling tracking functions.
+ * The tracker can only be initialized once, subsequent calls will fail.
  *
  * See:
  * - https://developers.piwik.pro/en/latest/sdk/Piwik_PRO_SDK_for_Android.html#configuration

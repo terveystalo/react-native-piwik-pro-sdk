@@ -20,6 +20,11 @@ class PiwikProSdkModule(reactContext: ReactApplicationContext) : ReactContextBas
 
     @ReactMethod
     fun init(baseUrl: String, siteId: String, options: ReadableMap, promise: Promise) {
+        if (this.tracker != null) {
+            promise.reject(Error("Tracker already initialized"));
+            return;
+        }
+
         try {
             this.tracker = Piwik.getInstance(this.reactApplicationContext)
               .newTracker(TrackerConfig.createDefault(baseUrl, siteId))
