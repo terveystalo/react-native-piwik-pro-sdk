@@ -33,7 +33,7 @@ RCT_REMAP_METHOD(init,
     }
 
     if (options[@"isPrefixingEnabled"] != nil) {
-      tracker.isPrefixingEnabled = options[@"isPrefixingEnabled"];
+      tracker.isPrefixingEnabled = [options[@"isPrefixingEnabled"] boolValue];
     }
 
     resolve(nil);
