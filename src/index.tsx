@@ -16,6 +16,14 @@ type TrackerOptions = Partial<{
    * - https://developers.piwik.pro/en/latest/sdk/Piwik_PRO_SDK_for_iOS.html#dispatching
    */
   dispatchInterval: number;
+  /**
+   * If set to false, default URL path prefixes are disabled.
+   *
+   * See
+   * - https://developers.piwik.pro/en/latest/sdk/Piwik_PRO_SDK_for_Android.html#tracking-screen-views
+   * - https://developers.piwik.pro/en/latest/sdk/Piwik_PRO_SDK_for_iOS.html#tracking-screen-views
+   */
+  isPrefixingEnabled: boolean;
 }>;
 
 type PiwikProSdkType = {

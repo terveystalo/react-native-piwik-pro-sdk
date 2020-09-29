@@ -39,6 +39,10 @@ class PiwikProSdkModule(reactContext: ReactApplicationContext) : ReactContextBas
                 tracker.dispatchInterval = options.getInt("dispatchInterval").toLong()
             }
 
+            if (options.hasKey("isPrefixingEnabled")) {
+              tracker.isPrefixing = options.getBoolean("isPrefixingEnabled")
+            }
+
             this.tracker = tracker
             promise.resolve(null)
         } catch (error: Exception) {
