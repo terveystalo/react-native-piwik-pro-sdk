@@ -22,10 +22,15 @@ RCT_REMAP_METHOD(init,
   dispatch_async(dispatch_get_main_queue(), ^{
     PiwikTracker* tracker = [PiwikTracker sharedInstanceWithSiteID:siteID baseURL:[NSURL URLWithString:baseURL]];
 
+    NSBundle* mainBundle = [NSBundle mainBundle];
+    // Default value contains both version and build number
+    // Set to only version, so that we are consistent with Android behaviour
+    tracker.appVersion = [[mainBundle infoDictionary] objectForKey:@"CFBundleShortVersionString"];
+
     if (options[@"applicationDomain"] != nil) {
       tracker.appName = options[@"applicationDomain"];
     } else {
-      tracker.appName = [[NSBundle mainBundle] bundleIdentifier];
+      tracker.appName = [mainBundle bundleIdentifier];
     }
 
     if (options[@"dispatchInterval"] != nil) {
