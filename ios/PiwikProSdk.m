@@ -32,6 +32,10 @@ RCT_REMAP_METHOD(init,
       tracker.dispatchInterval = [options[@"dispatchInterval"] doubleValue];
     }
 
+    if (options[@"isPrefixingEnabled"] != nil) {
+      tracker.isPrefixingEnabled = options[@"isPrefixingEnabled"];
+    }
+
     resolve(nil);
   });
 }
