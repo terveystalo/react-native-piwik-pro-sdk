@@ -1,19 +1,86 @@
 #import "PiwikProSdk.h"
 
+#import <PiwikPROSDK/PiwikPROSDK.h>
+
 @implementation PiwikProSdk
 
 RCT_EXPORT_MODULE()
 
-// Example method
-// See // https://facebook.github.io/react-native/docs/native-modules-ios
-RCT_REMAP_METHOD(multiply,
-                 multiplyWithA:(nonnull NSNumber*)a withB:(nonnull NSNumber*)b
+RCT_REMAP_METHOD(init,
+                 initWithBaseURL:(nonnull NSString*)baseURL
+                 withSiteID:(nonnull NSString*)siteID
+                 withOptions:(nonnull NSDictionary*)options
                  withResolver:(RCTPromiseResolveBlock)resolve
                  withRejecter:(RCTPromiseRejectBlock)reject)
 {
-  NSNumber *result = @([a floatValue] * [b floatValue]);
+  if ([PiwikTracker sharedInstance] != nil) {
+    NSError* error = [NSError errorWithDomain:@"react-native-piwik-pro-sdk" code:0 userInfo:nil];
+    reject(@"already_initialized", @"Tracker already initialized", error);
+    return;
+  }
 
-  resolve(result);
+  dispatch_async(dispatch_get_main_queue(), ^{
+    PiwikTracker* tracker = [PiwikTracker sharedInstanceWithSiteID:siteID baseURL:[NSURL URLWithString:baseURL]];
+
+    if (options[@"applicationDomain"] != nil) {
+      tracker.appName = options[@"applicationDomain"];
+    } else {
+      tracker.appName = [[NSBundle mainBundle] bundleIdentifier];
+    }
+
+    if (options[@"dispatchInterval"] != nil) {
+      tracker.dispatchInterval = [options[@"dispatchInterval"] doubleValue];
+    }
+
+    resolve(nil);
+  });
+}
+
+RCT_REMAP_METHOD(trackScreen,
+                 trackScreenWithPath:(nonnull NSString*)path
+                 withResolver:(RCTPromiseResolveBlock)resolve
+                 withRejecter:(RCTPromiseRejectBlock)reject)
+{
+  @try {
+    [[PiwikTracker sharedInstance] sendView:path];
+    resolve(nil);
+  } @catch (NSException *exception) {
+    NSError* error = [NSError errorWithDomain:@"react-native-piwik-pro-sdk" code:0 userInfo:nil];
+    reject(exception.name, exception.reason, error);
+  }
+}
+
+RCT_REMAP_METHOD(trackEvent,
+                 trackScreenWithCategory:(nonnull NSString*)category
+                 withAction:(nonnull NSString*)action
+                 optionalArgs:(nonnull NSDictionary*)optionalArgs
+                 withResolver:(RCTPromiseResolveBlock)resolve
+                 withRejecter:(RCTPromiseRejectBlock)reject)
+{
+  @try {
+    [[PiwikTracker sharedInstance]
+     sendEventWithCategory:category
+     action:action
+     name:optionalArgs[@"name"]
+     value:optionalArgs[@"value"]];
+    resolve(nil);
+  } @catch (NSException *exception) {
+    NSError* error = [NSError errorWithDomain:@"react-native-piwik-pro-sdk" code:0 userInfo:nil];
+    reject(exception.name, exception.reason, error);
+  }
+}
+
+RCT_REMAP_METHOD(dispatch,
+                 dispatchWithResolver:(RCTPromiseResolveBlock)resolve
+                 withRejecter:(RCTPromiseRejectBlock)reject)
+{
+  @try {
+    [[PiwikTracker sharedInstance] dispatch];
+    resolve(nil);
+  } @catch (NSException *exception) {
+    NSError* error = [NSError errorWithDomain:@"react-native-piwik-pro-sdk" code:0 userInfo:nil];
+    reject(exception.name, exception.reason, error);
+  }
 }
 
 @end

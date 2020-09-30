@@ -1,6 +1,6 @@
 # react-native-piwik-pro-sdk
 
-React Native wrapper for Piwik Pro SDK
+React Native wrapper for the native [Piwik PRO SDKs](https://developers.piwik.pro/en/latest/sdk/index.html).
 
 ## Installation
 
@@ -11,12 +11,27 @@ npm install react-native-piwik-pro-sdk
 ## Usage
 
 ```js
-import PiwikProSdk from "react-native-piwik-pro-sdk";
+import * as PiwikProSdk from 'react-native-piwik-pro-sdk';
 
-// ...
+// Initialize tracker
+await PiwikProSdk.init(
+  'https://demoaccess.piwik.pro/',
+  '3e7e6ab9-d605-42b0-ac1b-cdf5bb5e216f'
+);
 
-const result = await PiwikProSdk.multiply(3, 7);
+// Track screen
+await PiwikProSdk.trackScreen('main/list');
+
+// Track event
+await PiwikProSdk.trackEvent(
+  'app', // Category
+  'launch', // Action
+  'notification', // Name (optional)
+  1.04 // Value (optional)
+);
 ```
+
+For more details, see the code in [`src/index.tsx`](src/index.tsx).
 
 ## Contributing
 
