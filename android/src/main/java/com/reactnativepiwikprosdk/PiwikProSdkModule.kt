@@ -55,7 +55,7 @@ class PiwikProSdkModule(reactContext: ReactApplicationContext) : ReactContextBas
         try {
             TrackHelper.track()
                 .screen(path)
-                .with(this.tracker ?: throw Error("Tracker is not initialized"))
+                .with(this.tracker ?: throw Exception("Tracker is not initialized"))
             promise.resolve(null)
         } catch (error: Exception) {
             promise.reject(error)
@@ -76,7 +76,7 @@ class PiwikProSdkModule(reactContext: ReactApplicationContext) : ReactContextBas
                 track.value(optionalArgs.getDouble("value").toFloat());
             }
 
-            track.with(this.tracker ?: throw Error("Tracker is not initialized"))
+            track.with(this.tracker ?: throw Exception("Tracker is not initialized"))
             promise.resolve(null)
         } catch (error: Exception) {
             promise.reject(error)
@@ -86,7 +86,7 @@ class PiwikProSdkModule(reactContext: ReactApplicationContext) : ReactContextBas
     @ReactMethod
     fun dispatch(promise: Promise) {
         try {
-            (this.tracker ?: throw Error("Tracker is not initialized")).dispatch()
+            (this.tracker ?: throw Exception("Tracker is not initialized")).dispatch()
             promise.resolve(null);
         } catch (error: Exception) {
             promise.reject(error)
