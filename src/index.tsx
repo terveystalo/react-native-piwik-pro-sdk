@@ -1,4 +1,4 @@
-import { NativeModules } from 'react-native';
+import { NativeModules, Platform } from 'react-native';
 
 type TrackerOptions = Partial<{
   /**
@@ -26,7 +26,13 @@ type TrackerOptions = Partial<{
   isPrefixingEnabled: boolean;
 }>;
 
+type NativeCustomDimensionScope = {
+  visit: unknown;
+  action: unknown;
+};
+
 type PiwikProSdkType = {
+  CustomDimensionScope: NativeCustomDimensionScope;
   init(baseUrl: string, siteId: string, options: TrackerOptions): Promise<void>;
   trackScreen(path: string): Promise<void>;
   trackEvent(
@@ -39,10 +45,31 @@ type PiwikProSdkType = {
       value?: number;
     }
   ): Promise<void>;
+  setCustomDimension(
+    index: number,
+    value: string,
+    scope?: unknown
+  ): Promise<void>;
   dispatch(): Promise<void>;
 };
 
 const PiwikProSdk: PiwikProSdkType = NativeModules.PiwikProSdk;
+
+export enum CustomDimensionScope {
+  visit,
+  action,
+}
+
+const getDimensionScope = (scope: CustomDimensionScope) => {
+  switch (scope) {
+    case CustomDimensionScope.visit:
+      return PiwikProSdk.CustomDimensionScope.visit;
+    case CustomDimensionScope.action:
+      return PiwikProSdk.CustomDimensionScope.action;
+    default:
+      throw new Error('Unknown CustomDimensionScope');
+  }
+};
 
 /**
  * Initialize the SDK. Needs to be called before calling tracking functions.
@@ -85,6 +112,26 @@ export async function trackEvent(
   value?: number
 ): Promise<void> {
   return await PiwikProSdk.trackEvent(category, action, { name, value });
+}
+
+/**
+ * Set a custom dimension.
+ *
+ * See:
+ * - https://developers.piwik.pro/en/latest/sdk/Piwik_PRO_SDK_for_Android.html#tracking-custom-dimensions
+ * - https://developers.piwik.pro/en/latest/sdk/Piwik_PRO_SDK_for_iOS.html#tracking-with-custom-dimensions
+ */
+export async function setCustomDimension(
+  index: number,
+  value: string,
+  scope: CustomDimensionScope
+): Promise<void> {
+  if (Platform && Platform.OS === 'ios') {
+    const dimensionScope = getDimensionScope(scope);
+    return await PiwikProSdk.setCustomDimension(index, value, dimensionScope);
+  }
+
+  return await PiwikProSdk.setCustomDimension(index, value);
 }
 
 /**

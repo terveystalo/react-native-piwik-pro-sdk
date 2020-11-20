@@ -79,6 +79,25 @@ RCT_REMAP_METHOD(trackEvent,
   }
 }
 
+RCT_REMAP_METHOD(setCustomDimension,
+                 setCustomDimensionForIndex:(NSUInteger)index
+                 withValue:(nonnull NSString*)value
+                 withScope:(CustomDimensionScope)scope
+                 withResolver:(RCTPromiseResolveBlock)resolve
+                 withRejecter:(RCTPromiseRejectBlock)reject)
+{
+  @try {
+    [[PiwikTracker sharedInstance]
+     setCustomDimensionForIndex:index
+     value:value
+     scope:scope];
+    resolve(nil);
+  } @catch (NSException *exception) {
+    NSError* error = [NSError errorWithDomain:@"react-native-piwik-pro-sdk" code:0 userInfo:nil];
+    reject(exception.name, exception.reason, error);
+  }
+}
+
 RCT_REMAP_METHOD(dispatch,
                  dispatchWithResolver:(RCTPromiseResolveBlock)resolve
                  withRejecter:(RCTPromiseRejectBlock)reject)
@@ -90,6 +109,16 @@ RCT_REMAP_METHOD(dispatch,
     NSError* error = [NSError errorWithDomain:@"react-native-piwik-pro-sdk" code:0 userInfo:nil];
     reject(exception.name, exception.reason, error);
   }
+}
+
+- (NSDictionary *)constantsToExport
+{
+  return @{
+      @"CustomDimensionScope": @{
+          @"visit": @(CustomDimensionScopeVisit),
+          @"action": @(CustomDimensionScopeAction)
+      }
+  };
 }
 
 @end

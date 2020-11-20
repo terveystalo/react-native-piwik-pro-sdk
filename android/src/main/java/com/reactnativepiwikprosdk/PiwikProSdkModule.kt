@@ -84,6 +84,18 @@ class PiwikProSdkModule(reactContext: ReactApplicationContext) : ReactContextBas
     }
 
     @ReactMethod
+    fun setCustomDimension(index: Int, value: String, promise: Promise) {
+        try {
+            var track = TrackHelper.track()
+                .dimension(index, value)
+                .with(this.tracker ?: throw Exception("Tracker is not initialized"))
+            promise.resolve(null)
+        } catch (error: Exception) {
+            promise.reject(error)
+        }
+    }
+
+    @ReactMethod
     fun dispatch(promise: Promise) {
         try {
             (this.tracker ?: throw Exception("Tracker is not initialized")).dispatch()

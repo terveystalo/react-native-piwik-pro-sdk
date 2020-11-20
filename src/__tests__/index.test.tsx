@@ -4,6 +4,7 @@ jest.mock('react-native', () => ({
       init: jest.fn(),
       trackScreen: jest.fn(),
       trackEvent: jest.fn(),
+      setCustomDimension: jest.fn(),
       dispatch: jest.fn(),
     },
   },
@@ -12,6 +13,7 @@ jest.mock('react-native', () => ({
 import { NativeModules } from 'react-native';
 
 import * as PiwikProSdk from '../';
+import { CustomDimensionScope } from '../';
 
 describe('react-native-piwik-pro-sdk', () => {
   describe('init', () => {
@@ -37,6 +39,21 @@ describe('react-native-piwik-pro-sdk', () => {
           name: undefined,
           value: undefined,
         }
+      );
+    });
+  });
+
+  describe('setCustomDimension', () => {
+    it('Set custom dimension', async () => {
+      await PiwikProSdk.setCustomDimension(
+        0,
+        'test',
+        CustomDimensionScope.visit
+      );
+
+      expect(NativeModules.PiwikProSdk.setCustomDimension).toHaveBeenCalledWith(
+        0,
+        'test'
       );
     });
   });
