@@ -82,15 +82,27 @@ RCT_REMAP_METHOD(trackEvent,
 RCT_REMAP_METHOD(setCustomDimension,
                  setCustomDimensionForIndex:(NSUInteger)index
                  withValue:(nonnull NSString*)value
-                 withScope:(CustomDimensionScope)scope
+                 withScope:(nonnull NSString*)scope
                  withResolver:(RCTPromiseResolveBlock)resolve
                  withRejecter:(RCTPromiseRejectBlock)reject)
 {
   @try {
+    CustomDimensionScope dimensionScope;
+      
+    if ([scope isEqualToString:@"visit"]) {
+      dimensionScope = CustomDimensionScopeVisit;
+    } else if ([scope isEqualToString:@"action"]) {
+      dimensionScope = CustomDimensionScopeAction;
+    } else {
+      NSError* error = [NSError errorWithDomain:@"react-native-piwik-pro-sdk" code:0 userInfo:nil];
+      reject(@"Unsupported custom dimension scope", @"Supported custom dimension scopes are 'visit' and 'action'.", error);
+      return;
+    }
+      
     [[PiwikTracker sharedInstance]
      setCustomDimensionForIndex:index
      value:value
-     scope:scope];
+     scope:dimensionScope];
     resolve(nil);
   } @catch (NSException *exception) {
     NSError* error = [NSError errorWithDomain:@"react-native-piwik-pro-sdk" code:0 userInfo:nil];
@@ -109,16 +121,6 @@ RCT_REMAP_METHOD(dispatch,
     NSError* error = [NSError errorWithDomain:@"react-native-piwik-pro-sdk" code:0 userInfo:nil];
     reject(exception.name, exception.reason, error);
   }
-}
-
-- (NSDictionary *)constantsToExport
-{
-  return @{
-      @"CustomDimensionScope": @{
-          @"visit": @(CustomDimensionScopeVisit),
-          @"action": @(CustomDimensionScopeAction)
-      }
-  };
 }
 
 @end
