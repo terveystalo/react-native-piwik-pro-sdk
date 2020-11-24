@@ -43,12 +43,13 @@ describe('react-native-piwik-pro-sdk', () => {
   });
 
   describe('setCustomDimension', () => {
-    it('Set custom dimension', async () => {
+    it('sets custom dimension', async () => {
       await PiwikProSdk.setCustomDimension(0, 'test', 'visit');
 
       expect(NativeModules.PiwikProSdk.setCustomDimension).toHaveBeenCalledWith(
         0,
-        'test'
+        'test',
+        'visit'
       );
     });
   });
