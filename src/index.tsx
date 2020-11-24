@@ -96,6 +96,7 @@ export async function trackEvent(
 
 /**
  * Set a custom dimension.
+ * Using 'visit' scope will associate the custom dimension with the current session. Using 'action' scope will limit the custom dimension to a single action.
  *
  * See:
  * - https://developers.piwik.pro/en/latest/sdk/Piwik_PRO_SDK_for_Android.html#tracking-custom-dimensions
