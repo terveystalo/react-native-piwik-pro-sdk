@@ -26,9 +26,21 @@ type TrackerOptions = Partial<{
   isPrefixingEnabled: boolean;
 }>;
 
+export interface CustomDimensions {
+  [index: number]: string;
+}
+
+interface CustomDimension {
+  index: number;
+  value: string;
+}
+
 type PiwikProSdkType = {
   init(baseUrl: string, siteId: string, options: TrackerOptions): Promise<void>;
-  trackScreen(path: string): Promise<void>;
+  trackScreen(
+    path: string,
+    customDimensions?: CustomDimension[]
+  ): Promise<void>;
   trackEvent(
     category: string,
     action: string,
@@ -37,7 +49,8 @@ type PiwikProSdkType = {
     optionalArgs: {
       name?: string;
       value?: number;
-    }
+    },
+    customDimensions?: CustomDimension[]
   ): Promise<void>;
   dispatch(): Promise<void>;
 };
@@ -67,8 +80,12 @@ export async function init(
  * - https://developers.piwik.pro/en/latest/sdk/Piwik_PRO_SDK_for_Android.html#tracking-screen-views
  * - https://developers.piwik.pro/en/latest/sdk/Piwik_PRO_SDK_for_iOS.html#tracking-screen-views
  */
-export async function trackScreen(path: string): Promise<void> {
-  return await PiwikProSdk.trackScreen(path);
+export async function trackScreen(
+  path: string,
+  customDimensions?: CustomDimensions
+): Promise<void> {
+  const customDimensionsArray = customDimensionsToArray(customDimensions);
+  return await PiwikProSdk.trackScreen(path, customDimensionsArray);
 }
 
 /**
@@ -82,9 +99,19 @@ export async function trackEvent(
   category: string,
   action: string,
   name?: string,
-  value?: number
+  value?: number,
+  customDimensions?: CustomDimensions
 ): Promise<void> {
-  return await PiwikProSdk.trackEvent(category, action, { name, value });
+  const customDimensionsArray = customDimensionsToArray(customDimensions);
+  return await PiwikProSdk.trackEvent(
+    category,
+    action,
+    {
+      name,
+      value,
+    },
+    customDimensionsArray
+  );
 }
 
 /**
@@ -95,3 +122,28 @@ export async function trackEvent(
  * - https://developers.piwik.pro/en/latest/sdk/Piwik_PRO_SDK_for_iOS.html#dispatching
  */
 export const dispatch = PiwikProSdk.dispatch;
+
+const customDimensionsToArray = (
+  customDimensions?: CustomDimensions
+): CustomDimension[] | undefined => {
+  if (!customDimensions) {
+    return customDimensions;
+  }
+
+  const customDimensionsArray = Object.entries(customDimensions).map(
+    ([i, value]) => {
+      const index = parseInt(i, 10);
+
+      if (index <= 0) {
+        throw new Error('Custom dimension index must be larger than 0');
+      }
+
+      return {
+        index,
+        value,
+      };
+    }
+  );
+
+  return customDimensionsArray;
+};

@@ -20,14 +20,23 @@ await PiwikProSdk.init(
 );
 
 // Track screen
-await PiwikProSdk.trackScreen('main/list');
+await PiwikProSdk.trackScreen(
+  'main/list', // Path
+  {
+    1: 'first',
+  } // Custom dimensions { [index: number]: value: string } (optional)
+);
 
 // Track event
 await PiwikProSdk.trackEvent(
   'app', // Category
   'launch', // Action
   'notification', // Name (optional)
-  1.04 // Value (optional)
+  1.04, // Value (optional)
+  {
+    1: 'first',
+    2: 'second',
+  } // Custom dimensions { [index: number]: value: string } (optional)
 );
 ```
 
