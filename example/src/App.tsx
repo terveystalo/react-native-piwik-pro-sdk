@@ -17,25 +17,29 @@ export default function App() {
       2: 'second',
     };
 
-    // Track screen view with custom dimension
-    await PiwikProSdk.trackScreen('main/list', firstCustomDimension);
-    // Track custom event with a custom dimension
-    await PiwikProSdk.trackEvent(
-      'app',
-      'launch',
-      'notification',
-      1.04,
-      firstCustomDimension
-    );
-    // Track custom event with multiple custom dimensions
-    await PiwikProSdk.trackEvent('app', 'test1', undefined, undefined, {
-      ...firstCustomDimension,
-      ...secondCustomDimension,
-    });
-    // Track custom event withouth custom dimensions
-    await PiwikProSdk.trackEvent('app', 'test3');
-    // Immediately dispatch all events
-    await PiwikProSdk.dispatch();
+    try {
+      // Track screen view with custom dimension
+      await PiwikProSdk.trackScreen('main/list', firstCustomDimension);
+      // Track custom event with a custom dimension
+      await PiwikProSdk.trackEvent(
+        'app',
+        'launch',
+        'notification',
+        1.04,
+        firstCustomDimension
+      );
+      // Track custom event with multiple custom dimensions
+      await PiwikProSdk.trackEvent('app', 'test1', undefined, undefined, {
+        ...firstCustomDimension,
+        ...secondCustomDimension,
+      });
+      // Track custom event withouth custom dimensions
+      await PiwikProSdk.trackEvent('app', 'test3');
+      // Immediately dispatch all events
+      await PiwikProSdk.dispatch();
+    } catch (error) {
+      setResult({ type: 'Error', error });
+    }
   }, []);
 
   React.useEffect(() => {
