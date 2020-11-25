@@ -4,7 +4,6 @@ jest.mock('react-native', () => ({
       init: jest.fn(),
       trackScreen: jest.fn(),
       trackEvent: jest.fn(),
-      setCustomDimension: jest.fn(),
       dispatch: jest.fn(),
     },
   },
@@ -37,19 +36,9 @@ describe('react-native-piwik-pro-sdk', () => {
         {
           name: undefined,
           value: undefined,
+          customDimensionIndex: undefined,
+          customDimensionValue: undefined,
         }
-      );
-    });
-  });
-
-  describe('setCustomDimension', () => {
-    it('sets custom dimension', async () => {
-      await PiwikProSdk.setCustomDimension(0, 'test', 'visit');
-
-      expect(NativeModules.PiwikProSdk.setCustomDimension).toHaveBeenCalledWith(
-        0,
-        'test',
-        'visit'
       );
     });
   });

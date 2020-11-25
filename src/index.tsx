@@ -26,11 +26,17 @@ type TrackerOptions = Partial<{
   isPrefixingEnabled: boolean;
 }>;
 
-export type CustomDimensionScope = 'visit' | 'action';
-
 type PiwikProSdkType = {
   init(baseUrl: string, siteId: string, options: TrackerOptions): Promise<void>;
-  trackScreen(path: string): Promise<void>;
+  trackScreen(
+    path: string,
+    // Optional arguments need to be passed in map
+    // since nullable numbers are not supported
+    optionalArgs: {
+      customDimensionIndex?: number;
+      customDimensionValue?: string;
+    }
+  ): Promise<void>;
   trackEvent(
     category: string,
     action: string,
@@ -39,12 +45,9 @@ type PiwikProSdkType = {
     optionalArgs: {
       name?: string;
       value?: number;
+      customDimensionIndex?: number;
+      customDimensionValue?: string;
     }
-  ): Promise<void>;
-  setCustomDimension(
-    index: number,
-    value: string,
-    scope: CustomDimensionScope
   ): Promise<void>;
   dispatch(): Promise<void>;
 };
@@ -74,8 +77,15 @@ export async function init(
  * - https://developers.piwik.pro/en/latest/sdk/Piwik_PRO_SDK_for_Android.html#tracking-screen-views
  * - https://developers.piwik.pro/en/latest/sdk/Piwik_PRO_SDK_for_iOS.html#tracking-screen-views
  */
-export async function trackScreen(path: string): Promise<void> {
-  return await PiwikProSdk.trackScreen(path);
+export async function trackScreen(
+  path: string,
+  customDimensionIndex?: number,
+  customDimensionValue?: string
+): Promise<void> {
+  return await PiwikProSdk.trackScreen(path, {
+    customDimensionIndex,
+    customDimensionValue,
+  });
 }
 
 /**
@@ -89,25 +99,16 @@ export async function trackEvent(
   category: string,
   action: string,
   name?: string,
-  value?: number
+  value?: number,
+  customDimensionIndex?: number,
+  customDimensionValue?: string
 ): Promise<void> {
-  return await PiwikProSdk.trackEvent(category, action, { name, value });
-}
-
-/**
- * Set a custom dimension.
- * Using 'visit' scope will associate the custom dimension with the current session. Using 'action' scope will limit the custom dimension to a single action.
- *
- * See:
- * - https://developers.piwik.pro/en/latest/sdk/Piwik_PRO_SDK_for_Android.html#tracking-custom-dimensions
- * - https://developers.piwik.pro/en/latest/sdk/Piwik_PRO_SDK_for_iOS.html#tracking-with-custom-dimensions
- */
-export async function setCustomDimension(
-  index: number,
-  value: string,
-  scope: CustomDimensionScope
-): Promise<void> {
-  return await PiwikProSdk.setCustomDimension(index, value, scope);
+  return await PiwikProSdk.trackEvent(category, action, {
+    name,
+    value,
+    customDimensionIndex,
+    customDimensionValue,
+  });
 }
 
 /**

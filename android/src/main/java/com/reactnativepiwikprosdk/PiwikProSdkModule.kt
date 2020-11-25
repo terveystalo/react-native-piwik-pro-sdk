@@ -1,20 +1,18 @@
 package com.reactnativepiwikprosdk
 
-import android.util.Log
-import com.facebook.react.bridge.*
+import com.facebook.react.bridge.ReactApplicationContext
+import com.facebook.react.bridge.ReactContextBaseJavaModule
+import com.facebook.react.bridge.ReactMethod
+import com.facebook.react.bridge.ReadableMap
+import com.facebook.react.bridge.Promise
+
 import pro.piwik.sdk.Piwik
 import pro.piwik.sdk.Tracker
 import pro.piwik.sdk.TrackerConfig
-import pro.piwik.sdk.dispatcher.Packet
-import pro.piwik.sdk.extra.CustomDimension
 import pro.piwik.sdk.extra.TrackHelper
-import java.util.*
-import kotlin.collections.ArrayList
-import kotlin.collections.HashMap
 
 class PiwikProSdkModule(reactContext: ReactApplicationContext) : ReactContextBaseJavaModule(reactContext) {
     private var tracker: Tracker? = null
-    private var customDimensions: HashMap<Int, String> = HashMap()
 
     override fun getName(): String {
         return "PiwikProSdk"
@@ -27,7 +25,7 @@ class PiwikProSdkModule(reactContext: ReactApplicationContext) : ReactContextBas
             return;
         }
 
-      try {
+        try {
             var tracker = Piwik.getInstance(this.reactApplicationContext)
                 .newTracker(TrackerConfig.createDefault(baseUrl, siteId))
 
@@ -53,15 +51,14 @@ class PiwikProSdkModule(reactContext: ReactApplicationContext) : ReactContextBas
     }
 
     @ReactMethod
-    fun trackScreen(path: String, promise: Promise) {
+    fun trackScreen(path: String, optionalArgs: ReadableMap, promise: Promise) {
         try {
             var tracker = this.tracker ?: throw Exception("Tracker is not initialized")
-            TrackHelper.track(tracker.defaultTrackMe)
+            getTrackHelperWithDimensions(optionalArgs)
                 .screen(path)
                 .with(tracker)
 
-          this.cleanActionDimensions(tracker)
-          promise.resolve(null)
+            promise.resolve(null)
         } catch (error: Exception) {
             promise.reject(error)
         }
@@ -71,7 +68,7 @@ class PiwikProSdkModule(reactContext: ReactApplicationContext) : ReactContextBas
     fun trackEvent(category: String, action: String, optionalArgs: ReadableMap, promise: Promise) {
         try {
             var tracker = this.tracker ?: throw Exception("Tracker is not initialized")
-            var track = TrackHelper.track(tracker.defaultTrackMe)
+            var track = getTrackHelperWithDimensions(optionalArgs)
                 .event(category, action)
 
             if (optionalArgs.hasKey("name")) {
@@ -83,21 +80,6 @@ class PiwikProSdkModule(reactContext: ReactApplicationContext) : ReactContextBas
             }
 
             track.with(tracker)
-
-            this.cleanActionDimensions(tracker)
-            promise.resolve(null)
-        } catch (error: Exception) {
-            promise.reject(error)
-        }
-    }
-
-    @ReactMethod
-    fun setCustomDimension(index: Int, value: String, scope: String, promise: Promise) {
-        try {
-            var tracker = this.tracker ?: throw Exception("Tracker is not initialized")
-
-            CustomDimension.setDimension(tracker.defaultTrackMe, index, value)
-            customDimensions.put(index, scope)
 
             promise.resolve(null)
         } catch (error: Exception) {
@@ -115,13 +97,13 @@ class PiwikProSdkModule(reactContext: ReactApplicationContext) : ReactContextBas
         }
     }
 
-    private fun cleanActionDimensions(tracker: Tracker) {
-      customDimensions.forEach {
-        if (it.value == "action") {
-          CustomDimension.setDimension(tracker.defaultTrackMe, it.key, null)
+    private fun getTrackHelperWithDimensions(optionalArgs: ReadableMap): TrackHelper {
+        var trackHelper = TrackHelper.track()
+
+        if (optionalArgs.hasKey("customDimensionIndex") && optionalArgs.hasKey("customDimensionValue")) {
+            trackHelper.dimension(optionalArgs.getInt("customDimensionIndex"), optionalArgs.getString("customDimensionValue"))
         }
 
-        customDimensions.remove(it.key)
-      }
+        return trackHelper
     }
 }
