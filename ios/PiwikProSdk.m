@@ -98,7 +98,7 @@ RCT_REMAP_METHOD(dispatch,
   }
 }
 
-- (void)setCustomDimensions:(NSArray *)customDimensions {
+- (void)setCustomDimensions:(nullable NSArray *)customDimensions {
     for (NSDictionary* customDimension in customDimensions) {
         [[PiwikTracker sharedInstance]
          setCustomDimensionForIndex:[customDimension[@"index"] intValue]
