@@ -26,7 +26,11 @@ type TrackerOptions = Partial<{
   isPrefixingEnabled: boolean;
 }>;
 
-export interface CustomDimension {
+export interface CustomDimensions {
+  [index: number]: string;
+}
+
+interface CustomDimension {
   index: number;
   value: string;
 }
@@ -78,9 +82,10 @@ export async function init(
  */
 export async function trackScreen(
   path: string,
-  customDimensions?: CustomDimension[]
+  customDimensions?: CustomDimensions
 ): Promise<void> {
-  return await PiwikProSdk.trackScreen(path, customDimensions);
+  const customDimensionsArray = customDimensionsToArray(customDimensions);
+  return await PiwikProSdk.trackScreen(path, customDimensionsArray);
 }
 
 /**
@@ -95,8 +100,9 @@ export async function trackEvent(
   action: string,
   name?: string,
   value?: number,
-  customDimensions?: CustomDimension[]
+  customDimensions?: CustomDimensions
 ): Promise<void> {
+  const customDimensionsArray = customDimensionsToArray(customDimensions);
   return await PiwikProSdk.trackEvent(
     category,
     action,
@@ -104,7 +110,7 @@ export async function trackEvent(
       name,
       value,
     },
-    customDimensions
+    customDimensionsArray
   );
 }
 
@@ -116,3 +122,28 @@ export async function trackEvent(
  * - https://developers.piwik.pro/en/latest/sdk/Piwik_PRO_SDK_for_iOS.html#dispatching
  */
 export const dispatch = PiwikProSdk.dispatch;
+
+const customDimensionsToArray = (
+  customDimensions?: CustomDimensions
+): CustomDimension[] | undefined => {
+  if (!customDimensions) {
+    return customDimensions;
+  }
+
+  const customDimensionsArray = Object.entries(customDimensions).map(
+    ([i, value]) => {
+      const index = parseInt(i, 10);
+
+      if (index <= 0) {
+        throw new Error('Custom dimension index must be larger than 0');
+      }
+
+      return {
+        index,
+        value,
+      };
+    }
+  );
+
+  return customDimensionsArray;
+};

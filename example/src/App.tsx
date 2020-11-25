@@ -9,27 +9,29 @@ export default function App() {
   const [initialized, setInitialized] = React.useState(false);
 
   const sendTestEvents = React.useCallback(async () => {
-    const firstCustomDimension: PiwikProSdk.CustomDimension = {
-      index: 1,
-      value: 'first',
+    const firstCustomDimension: PiwikProSdk.CustomDimensions = {
+      1: 'first',
     };
 
-    const secondCustomDimension: PiwikProSdk.CustomDimension = {
-      index: 2,
-      value: 'second',
+    const secondCustomDimension: PiwikProSdk.CustomDimensions = {
+      2: 'second',
     };
 
     // Track screen view with custom dimension
-    await PiwikProSdk.trackScreen('main/list', [firstCustomDimension]);
+    await PiwikProSdk.trackScreen('main/list', firstCustomDimension);
     // Track custom event with a custom dimension
-    await PiwikProSdk.trackEvent('app', 'launch', 'notification', 1.04, [
-      firstCustomDimension,
-    ]);
+    await PiwikProSdk.trackEvent(
+      'app',
+      'launch',
+      'notification',
+      1.04,
+      firstCustomDimension
+    );
     // Track custom event with multiple custom dimensions
-    await PiwikProSdk.trackEvent('app', 'test1', undefined, undefined, [
-      firstCustomDimension,
-      secondCustomDimension,
-    ]);
+    await PiwikProSdk.trackEvent('app', 'test1', undefined, undefined, {
+      ...firstCustomDimension,
+      ...secondCustomDimension,
+    });
     // Track custom event withouth custom dimensions
     await PiwikProSdk.trackEvent('app', 'test3');
     // Immediately dispatch all events

@@ -55,7 +55,7 @@ class PiwikProSdkModule(reactContext: ReactApplicationContext) : ReactContextBas
     fun trackScreen(path: String, customDimensions: ReadableArray?, promise: Promise) {
         try {
             var tracker = this.tracker ?: throw Exception("Tracker is not initialized")
-            getTrackHelperWithDimensions(customDimensions)
+            getTrackHelperWithCustomDimensions(customDimensions)
                 .screen(path)
                 .with(tracker)
 
@@ -69,7 +69,7 @@ class PiwikProSdkModule(reactContext: ReactApplicationContext) : ReactContextBas
     fun trackEvent(category: String, action: String, optionalArgs: ReadableMap, customDimensions: ReadableArray?, promise: Promise) {
         try {
             var tracker = this.tracker ?: throw Exception("Tracker is not initialized")
-            var track = getTrackHelperWithDimensions(customDimensions)
+            var track = getTrackHelperWithCustomDimensions(customDimensions)
                 .event(category, action)
 
             if (optionalArgs.hasKey("name")) {
@@ -98,7 +98,7 @@ class PiwikProSdkModule(reactContext: ReactApplicationContext) : ReactContextBas
         }
     }
 
-    private fun getTrackHelperWithDimensions(customDimensions: ReadableArray?): TrackHelper {
+    private fun getTrackHelperWithCustomDimensions(customDimensions: ReadableArray?): TrackHelper {
         var trackHelper = TrackHelper.track()
 
         if (customDimensions == null) {

@@ -52,9 +52,7 @@ RCT_REMAP_METHOD(trackScreen,
                  withRejecter:(RCTPromiseRejectBlock)reject)
 {
   @try {
-    for (NSDictionary* customDimension in customDimensions) {
-      [self setDimension:customDimension[@"index"] value:customDimension[@"value"]];
-    }
+    [self setCustomDimensions:customDimensions];
     
     [[PiwikTracker sharedInstance] sendView:path];
     resolve(nil);
@@ -73,9 +71,7 @@ RCT_REMAP_METHOD(trackEvent,
                  withRejecter:(RCTPromiseRejectBlock)reject)
 {
   @try {
-      for (NSDictionary* customDimension in customDimensions) {
-        [self setDimension:customDimension[@"index"] value:customDimension[@"value"]];
-      }
+    [self setCustomDimensions:customDimensions];
       
     [[PiwikTracker sharedInstance]
      sendEventWithCategory:category
@@ -102,11 +98,13 @@ RCT_REMAP_METHOD(dispatch,
   }
 }
 
-- (void)setDimension:(NSNumber *)index value:(nonnull NSString*)value {
-    [[PiwikTracker sharedInstance]
-     setCustomDimensionForIndex:[index intValue]
-     value:value
-     scope:CustomDimensionScopeAction];
+- (void)setCustomDimensions:(NSArray *)customDimensions {
+    for (NSDictionary* customDimension in customDimensions) {
+        [[PiwikTracker sharedInstance]
+         setCustomDimensionForIndex:[customDimension[@"index"] intValue]
+         value:customDimension[@"value"]
+         scope:CustomDimensionScopeAction];
+    }
 }
 
 @end
