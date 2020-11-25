@@ -26,16 +26,16 @@ type TrackerOptions = Partial<{
   isPrefixingEnabled: boolean;
 }>;
 
+export interface CustomDimension {
+  index: number;
+  value: string;
+}
+
 type PiwikProSdkType = {
   init(baseUrl: string, siteId: string, options: TrackerOptions): Promise<void>;
   trackScreen(
     path: string,
-    // Optional arguments need to be passed in map
-    // since nullable numbers are not supported
-    optionalArgs: {
-      customDimensionIndex?: number;
-      customDimensionValue?: string;
-    }
+    customDimensions?: CustomDimension[]
   ): Promise<void>;
   trackEvent(
     category: string,
@@ -45,9 +45,8 @@ type PiwikProSdkType = {
     optionalArgs: {
       name?: string;
       value?: number;
-      customDimensionIndex?: number;
-      customDimensionValue?: string;
-    }
+    },
+    customDimensions?: CustomDimension[]
   ): Promise<void>;
   dispatch(): Promise<void>;
 };
@@ -79,13 +78,9 @@ export async function init(
  */
 export async function trackScreen(
   path: string,
-  customDimensionIndex?: number,
-  customDimensionValue?: string
+  customDimensions?: CustomDimension[]
 ): Promise<void> {
-  return await PiwikProSdk.trackScreen(path, {
-    customDimensionIndex,
-    customDimensionValue,
-  });
+  return await PiwikProSdk.trackScreen(path, customDimensions);
 }
 
 /**
@@ -100,15 +95,17 @@ export async function trackEvent(
   action: string,
   name?: string,
   value?: number,
-  customDimensionIndex?: number,
-  customDimensionValue?: string
+  customDimensions?: CustomDimension[]
 ): Promise<void> {
-  return await PiwikProSdk.trackEvent(category, action, {
-    name,
-    value,
-    customDimensionIndex,
-    customDimensionValue,
-  });
+  return await PiwikProSdk.trackEvent(
+    category,
+    action,
+    {
+      name,
+      value,
+    },
+    customDimensions
+  );
 }
 
 /**

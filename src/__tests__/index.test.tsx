@@ -36,9 +36,8 @@ describe('react-native-piwik-pro-sdk', () => {
         {
           name: undefined,
           value: undefined,
-          customDimensionIndex: undefined,
-          customDimensionValue: undefined,
-        }
+        },
+        undefined
       );
     });
   });

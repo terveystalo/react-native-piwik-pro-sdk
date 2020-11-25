@@ -47,13 +47,13 @@ RCT_REMAP_METHOD(init,
 
 RCT_REMAP_METHOD(trackScreen,
                  trackScreenWithPath:(nonnull NSString*)path
-                 optionalArgs:(nonnull NSDictionary*)optionalArgs
+                 customDimensions:(NSArray*)customDimensions
                  withResolver:(RCTPromiseResolveBlock)resolve
                  withRejecter:(RCTPromiseRejectBlock)reject)
 {
   @try {
-    if ([optionalArgs[@"customDimensionIndex"] isKindOfClass:[NSNumber class]] && optionalArgs[@"customDimensionValue"]) {
-      [self setDimension:optionalArgs[@"customDimensionIndex"] value:optionalArgs[@"customDimensionValue"]];
+    for (NSDictionary* customDimension in customDimensions) {
+      [self setDimension:customDimension[@"index"] value:customDimension[@"value"]];
     }
     
     [[PiwikTracker sharedInstance] sendView:path];
@@ -68,13 +68,14 @@ RCT_REMAP_METHOD(trackEvent,
                  trackScreenWithCategory:(nonnull NSString*)category
                  withAction:(nonnull NSString*)action
                  optionalArgs:(nonnull NSDictionary*)optionalArgs
+                 customDimensions:(NSArray*)customDimensions
                  withResolver:(RCTPromiseResolveBlock)resolve
                  withRejecter:(RCTPromiseRejectBlock)reject)
 {
   @try {
-    if ([optionalArgs[@"customDimensionIndex"] isKindOfClass:[NSNumber class]] && optionalArgs[@"customDimensionValue"]) {
-      [self setDimension:optionalArgs[@"customDimensionIndex"] value:optionalArgs[@"customDimensionValue"]];
-    }
+      for (NSDictionary* customDimension in customDimensions) {
+        [self setDimension:customDimension[@"index"] value:customDimension[@"value"]];
+      }
       
     [[PiwikTracker sharedInstance]
      sendEventWithCategory:category
