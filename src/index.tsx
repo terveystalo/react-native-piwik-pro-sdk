@@ -1,6 +1,6 @@
 import { NativeModules } from 'react-native';
 
-type TrackerOptions = Partial<{
+export type TrackerOptions = Partial<{
   /**
    * Domain part of screen view URL sent to Piwik.
    *
