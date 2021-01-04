@@ -1,6 +1,6 @@
 {
   "name": "react-native-piwik-pro-sdk",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "React Native wrapper for Piwik Pro SDK",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
