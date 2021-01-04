@@ -13,7 +13,6 @@ Pod::Spec.new do |s|
   s.platforms    = { :ios => "9.0" }
   s.source       = { :git => "https://github.com/terveystalo/react-native-piwik-pro-sdk.git", :tag => "#{s.version}" }
 
-  
   s.source_files = "ios/**/*.{h,m,mm}"
 
   s.static_framework = true
@@ -21,7 +20,5 @@ Pod::Spec.new do |s|
   s.user_target_xcconfig = { 'EXCLUDED_ARCHS[sdk=iphonesimulator*]' => 'arm64' }
 
   s.dependency "React"
-  # Cannot upgrade to latest versions
-  # See: https://github.com/PiwikPRO/piwik-pro-sdk-framework-ios/issues/2
-  s.dependency 'PiwikPROSDK', '1.0.1'
+  s.dependency 'PiwikPROSDK', '~> 1.0.7'
 end
