@@ -127,5 +127,6 @@ dependencies {
   // noinspection GradleDynamicVersion
   api 'com.facebook.react:react-native:+'
   api 'pro.piwik.sdk:piwik-sdk:1.+'
+  implementation "com.google.android.gms:play-services-ads-identifier:+"
   implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
 }
