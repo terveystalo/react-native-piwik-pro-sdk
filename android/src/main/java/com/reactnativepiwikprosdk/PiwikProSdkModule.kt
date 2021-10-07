@@ -1,16 +1,15 @@
 package com.reactnativepiwikprosdk
 
-import com.facebook.react.bridge.ReactApplicationContext
-import com.facebook.react.bridge.ReactContextBaseJavaModule
-import com.facebook.react.bridge.ReactMethod
-import com.facebook.react.bridge.ReadableMap
-import com.facebook.react.bridge.ReadableArray
-import com.facebook.react.bridge.Promise
-
+import android.os.Build
+import com.facebook.react.bridge.*
 import pro.piwik.sdk.Piwik
 import pro.piwik.sdk.Tracker
 import pro.piwik.sdk.TrackerConfig
+import pro.piwik.sdk.extra.DownloadTracker
+import pro.piwik.sdk.extra.DownloadTracker.Extra
+import pro.piwik.sdk.extra.DownloadTracker.Extra.Custom
 import pro.piwik.sdk.extra.TrackHelper
+
 
 class PiwikProSdkModule(reactContext: ReactApplicationContext) : ReactContextBaseJavaModule(reactContext) {
     private var tracker: Tracker? = null
@@ -115,5 +114,60 @@ class PiwikProSdkModule(reactContext: ReactApplicationContext) : ReactContextBas
         }
 
         return trackHelper
+    }
+
+    @ReactMethod
+    fun setUserId(userId: String, promise: Promise) {
+        try {
+            (this.tracker ?: throw Exception("Tracker is not initialized")).setUserId(userId)
+            promise.resolve(null);
+        } catch (error: Exception) {
+            promise.reject(error)
+        }
+    }
+
+    @ReactMethod
+    fun setUserEmail(userEmail: String, promise: Promise) {
+        try {
+            (this.tracker ?: throw Exception("Tracker is not initialized")).setUserMail(userEmail)
+            promise.resolve(null);
+        } catch (error: Exception) {
+            promise.reject(error)
+        }
+    }
+
+    @ReactMethod
+    fun sendApplicationDownload(promise: Promise) {
+        try {
+            var tracker = this.tracker ?: throw Exception("Tracker is not initialized")
+
+            var packageName = this.reactApplicationContext.packageName
+            var info = this.reactApplicationContext.packageManager.getPackageInfo(packageName,0)
+
+            var version = info.versionName
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+              version += " (" + info.getLongVersionCode() + ")";
+            } else {
+              version += " (" + info.versionCode + ")";
+            }
+
+            val downloadTracker = DownloadTracker(tracker)
+            val extra: Extra = object : Custom() {
+              override fun isIntensiveWork(): Boolean {
+                return false
+              }
+              
+              override fun buildExtraIdentifier(): String? {
+                return packageName
+              }
+            }
+
+          TrackHelper.track().download(downloadTracker).identifier(extra).force().version(version).with(tracker)
+
+            promise.resolve(null);
+        } catch (error: Exception) {
+            promise.reject(error)
+        }
     }
 }

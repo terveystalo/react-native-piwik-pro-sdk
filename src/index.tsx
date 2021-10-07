@@ -53,6 +53,9 @@ type PiwikProSdkType = {
     customDimensions?: CustomDimension[]
   ): Promise<void>;
   dispatch(): Promise<void>;
+  setUserId(userId?: string): Promise<void>;
+  setUserEmail(email?: string): Promise<void>;
+  sendApplicationDownload(): Promise<void>;
 };
 
 const PiwikProSdk: PiwikProSdkType = NativeModules.PiwikProSdk;
@@ -112,6 +115,39 @@ export async function trackEvent(
     },
     customDimensionsArray
   );
+}
+
+/**
+ * Set a custom user ID.
+ *
+ * See:
+ * - https://developers.piwik.pro/en/latest/data_collection/mobile/Piwik_PRO_SDK_for_Android.html#user-id
+ * - https://developers.piwik.pro/en/latest/data_collection/mobile/Piwik_PRO_SDK_for_iOS.html#user-id
+ */
+export async function setUserId(userId?: string): Promise<void> {
+  return PiwikProSdk.setUserId(userId);
+}
+
+/**
+ * Set a custom User email address.
+ *
+ * See:
+ * - https://developers.piwik.pro/en/latest/data_collection/mobile/Piwik_PRO_SDK_for_Android.html#user-email-address
+ * - https://developers.piwik.pro/en/latest/data_collection/mobile/Piwik_PRO_SDK_for_iOS.html#user-email-address
+ */
+export async function setUserEmail(userEmail?: string): Promise<void> {
+  return PiwikProSdk.setUserEmail(userEmail);
+}
+
+/**
+ * Track application installs
+ *
+ * See:
+ * - https://developers.piwik.pro/en/latest/data_collection/mobile/Piwik_PRO_SDK_for_Android.html#tracking-application-installs
+ * - https://developers.piwik.pro/en/latest/data_collection/mobile/Piwik_PRO_SDK_for_iOS.html#tracking-application-installs
+ */
+export async function sendApplicationDownload(): Promise<void> {
+  return PiwikProSdk.sendApplicationDownload();
 }
 
 /**
