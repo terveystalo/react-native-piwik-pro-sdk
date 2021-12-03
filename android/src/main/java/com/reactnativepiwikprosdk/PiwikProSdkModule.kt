@@ -117,7 +117,7 @@ class PiwikProSdkModule(reactContext: ReactApplicationContext) : ReactContextBas
     }
 
     @ReactMethod
-    fun setUserId(userId: String, promise: Promise) {
+    fun setUserId(userId: String?, promise: Promise) {
         try {
             (this.tracker ?: throw Exception("Tracker is not initialized")).setUserId(userId)
             promise.resolve(null);
@@ -127,7 +127,7 @@ class PiwikProSdkModule(reactContext: ReactApplicationContext) : ReactContextBas
     }
 
     @ReactMethod
-    fun setUserEmail(userEmail: String, promise: Promise) {
+    fun setUserEmail(userEmail: String?, promise: Promise) {
         try {
             (this.tracker ?: throw Exception("Tracker is not initialized")).setUserMail(userEmail)
             promise.resolve(null);
