@@ -44,6 +44,7 @@
   },
   "homepage": "https://github.com/terveystalo/react-native-piwik-pro-sdk#readme",
   "devDependencies": {
+    "metro-react-native-babel-preset":"^0.66.2",
     "@commitlint/config-conventional": "^8.3.4",
     "@react-native-community/bob": "^0.16.2",
     "@react-native-community/eslint-config": "^2.0.0",
