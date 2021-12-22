@@ -23,8 +23,6 @@
     "test": "jest",
     "typescript": "tsc --noEmit",
     "lint": "eslint \"**/*.{js,ts,tsx}\"",
-    "compile-android": "cd android && gradle assembleRelease",
-    "compile-ios": "pod lib lint --sources=https://cdn.cocoapods.org/,https://github.com/react-native-helpers/Specs.git --verbose --allow-warnings",
     "prepare": "bob build",
     "release": "release-it",
     "example": "yarn --cwd example",
