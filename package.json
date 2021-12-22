@@ -1,30 +1,28 @@
 {
   "name": "react-native-piwik-pro-sdk",
-  "version": "0.3.2",
+  "version": "0.3.3",
   "description": "React Native wrapper for Piwik Pro SDK",
-  "main": "lib/commonjs/index",
-  "module": "lib/module/index",
+  "main": "lib/commonjs/index.js",
+  "module": "lib/module/index.js",
   "types": "lib/typescript/src/index.d.ts",
-  "react-native": "src/index",
+  "react-native": "src/index.tsx",
   "source": "src/index",
   "files": [
     "src",
     "lib",
+    "!**/__tests__",
+    "!**/__fixtures__",
+    "!**/__mocks__",
     "android",
     "ios",
     "cpp",
     "react-native-piwik-pro-sdk.podspec",
-    "!lib/typescript/example",
-    "!**/__tests__",
-    "!**/__fixtures__",
-    "!**/__mocks__"
+    "!lib/typescript/example"
   ],
   "scripts": {
     "test": "jest",
     "typescript": "tsc --noEmit",
     "lint": "eslint \"**/*.{js,ts,tsx}\"",
-    "compile-android": "cd android && gradle assembleRelease",
-    "compile-ios": "pod lib lint --sources=https://cdn.cocoapods.org/,https://github.com/react-native-helpers/Specs.git --verbose --allow-warnings",
     "prepare": "bob build",
     "release": "release-it",
     "example": "yarn --cwd example",
@@ -44,13 +42,13 @@
   },
   "homepage": "https://github.com/terveystalo/react-native-piwik-pro-sdk#readme",
   "devDependencies": {
+    "metro-react-native-babel-preset":"^0.66.2",
     "@commitlint/config-conventional": "^8.3.4",
-    "@react-native-community/bob": "^0.16.2",
     "@react-native-community/eslint-config": "^2.0.0",
     "@release-it/conventional-changelog": "^1.1.4",
     "@types/jest": "^26.0.0",
     "@types/react": "^16.9.19",
-    "@types/react-native": "0.62.13",
+    "@types/react-native": "0.66.9",
     "commitlint": "^8.3.5",
     "eslint": "^7.2.0",
     "eslint-config-prettier": "^6.11.0",
@@ -59,8 +57,9 @@
     "jest": "^26.0.1",
     "pod-install": "^0.1.0",
     "prettier": "^2.0.5",
-    "react": "16.11.0",
-    "react-native": "0.62.2",
+    "react": "16.13.1",
+    "react-native": "0.63.4",
+    "react-native-builder-bob": "^0.18.2",
     "release-it": "^13.5.8",
     "typescript": "^3.8.3"
   },
@@ -132,7 +131,7 @@
     "trailingComma": "es5",
     "useTabs": false
   },
-  "@react-native-community/bob": {
+  "react-native-builder-bob": {
     "source": "src",
     "output": "lib",
     "targets": [
