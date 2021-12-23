@@ -20,6 +20,12 @@ export default function App() {
     try {
       // Track screen view with custom dimension
       await PiwikProSdk.trackScreen('main/list', firstCustomDimension);
+
+      // Track campaign
+      await PiwikProSdk.trackCampaign(
+        'https://www.example.com/?pk_campaign=example_campaign&pk_keyword=example_keyword&pk_cid=1'
+      );
+
       // Track custom event with a custom dimension
       await PiwikProSdk.trackEvent(
         'app',

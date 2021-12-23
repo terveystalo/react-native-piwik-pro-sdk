@@ -41,6 +41,7 @@ type PiwikProSdkType = {
     path: string,
     customDimensions?: CustomDimension[]
   ): Promise<void>;
+  trackCampaign(url: string): Promise<void>;
   trackEvent(
     category: string,
     action: string,
@@ -86,6 +87,17 @@ export async function trackScreen(
 ): Promise<void> {
   const customDimensionsArray = customDimensionsToArray(customDimensions);
   return await PiwikProSdk.trackScreen(path, customDimensionsArray);
+}
+
+/**
+ * Track a campaign.
+ *
+ * See:
+ * - https://developers.piwik.pro/en/latest/sdk/Piwik_PRO_SDK_for_Android.html#tracking-campaigns
+ * - https://developers.piwik.pro/en/latest/sdk/Piwik_PRO_SDK_for_iOS.html#tracking-campaigns
+ */
+export async function trackCampaign(url: string): Promise<void> {
+  return await PiwikProSdk.trackCampaign(url);
 }
 
 /**

@@ -62,6 +62,20 @@ RCT_REMAP_METHOD(trackScreen,
   }
 }
 
+RCT_REMAP_METHOD(trackCampaign,
+                 trackCampaignWithURL:(nonnull NSString*)url
+                 withResolver:(RCTPromiseResolveBlock)resolve
+                 withRejecter:(RCTPromiseRejectBlock)reject)
+{
+  @try {
+    [[PiwikTracker sharedInstance] sendCampaign:url];
+    resolve(nil);
+  } @catch (NSException *exception) {
+    NSError* error = [NSError errorWithDomain:@"react-native-piwik-pro-sdk" code:0 userInfo:nil];
+    reject(exception.name, exception.reason, error);
+  }
+}
+
 RCT_REMAP_METHOD(trackEvent,
                  trackScreenWithCategory:(nonnull NSString*)category
                  withAction:(nonnull NSString*)action

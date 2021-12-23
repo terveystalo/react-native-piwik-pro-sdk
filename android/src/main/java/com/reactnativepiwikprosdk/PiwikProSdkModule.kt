@@ -11,6 +11,7 @@ import pro.piwik.sdk.Piwik
 import pro.piwik.sdk.Tracker
 import pro.piwik.sdk.TrackerConfig
 import pro.piwik.sdk.extra.TrackHelper
+import java.net.URL
 
 class PiwikProSdkModule(reactContext: ReactApplicationContext) : ReactContextBaseJavaModule(reactContext) {
     private var tracker: Tracker? = null
@@ -59,6 +60,17 @@ class PiwikProSdkModule(reactContext: ReactApplicationContext) : ReactContextBas
                 .screen(path)
                 .with(tracker)
 
+            promise.resolve(null)
+        } catch (error: Exception) {
+            promise.reject(error)
+        }
+    }
+
+    @ReactMethod
+    fun trackCampaign(url: String, promise: Promise) {
+        try {
+            var tracker = this.tracker ?: throw Exception("Tracker is not initialized")
+            TrackHelper.track().campaign(URL(url)).with(tracker)
             promise.resolve(null)
         } catch (error: Exception) {
             promise.reject(error)

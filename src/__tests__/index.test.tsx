@@ -3,6 +3,7 @@ jest.mock('react-native', () => ({
     PiwikProSdk: {
       init: jest.fn(),
       trackScreen: jest.fn(),
+      trackCampaign: jest.fn(),
       trackEvent: jest.fn(),
       dispatch: jest.fn(),
     },
