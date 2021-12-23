@@ -38,6 +38,11 @@ await PiwikProSdk.trackEvent(
     2: 'second',
   } // Custom dimensions { [index: number]: value: string } (optional)
 );
+
+// Track campaign
+await PiwikProSdk.trackCampaign(
+  'https://www.example.com/?pk_campaign=example_campaign&pk_keyword=example_keyword&pk_cid=1'
+);
 ```
 
 For more details, see the code in [`src/index.tsx`](src/index.tsx).
