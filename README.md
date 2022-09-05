@@ -1,3 +1,7 @@
+:warning: **Deprecated:** Terveystalo will deprecate and archive this repository within next month. There is another library for react native at https://developers.piwik.pro/en/latest/data_collection/mobile/Piwik_PRO_SDK_for_React_Native.html.
+
+-----
+
 # react-native-piwik-pro-sdk
 
 React Native wrapper for the native [Piwik PRO SDKs](https://developers.piwik.pro/en/latest/sdk/index.html).
