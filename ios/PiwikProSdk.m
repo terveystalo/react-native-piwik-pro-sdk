@@ -98,6 +98,47 @@ RCT_REMAP_METHOD(dispatch,
   }
 }
 
+RCT_REMAP_METHOD(setUserId,
+                 setUserId:(nullable NSString*)userId
+                 dispatchWithResolver:(RCTPromiseResolveBlock)resolve
+                 withRejecter:(RCTPromiseRejectBlock)reject)
+{
+  @try {
+    [[PiwikTracker sharedInstance] setUserID: userId];
+    resolve(nil);
+  } @catch (NSException *exception) {
+    NSError* error = [NSError errorWithDomain:@"react-native-piwik-pro-sdk" code:0 userInfo:nil];
+    reject(exception.name, exception.reason, error);
+  }
+}
+
+RCT_REMAP_METHOD(setUserEmail,
+                 setUserEmail:(nullable NSString*)userEmail
+                 dispatchWithResolver:(RCTPromiseResolveBlock)resolve
+                 withRejecter:(RCTPromiseRejectBlock)reject)
+{
+  @try {
+    [[PiwikTracker sharedInstance] setUserEmail: userEmail];
+    resolve(nil);
+  } @catch (NSException *exception) {
+    NSError* error = [NSError errorWithDomain:@"react-native-piwik-pro-sdk" code:0 userInfo:nil];
+    reject(exception.name, exception.reason, error);
+  }
+}
+
+RCT_REMAP_METHOD(sendApplicationDownload,
+                 sendApplicationDownloadDispatchWithResolver:(RCTPromiseResolveBlock)resolve
+                 withRejecter:(RCTPromiseRejectBlock)reject)
+{
+  @try {
+    [[PiwikTracker sharedInstance] sendApplicationDownload];
+    resolve(nil);
+  } @catch (NSException *exception) {
+    NSError* error = [NSError errorWithDomain:@"react-native-piwik-pro-sdk" code:0 userInfo:nil];
+    reject(exception.name, exception.reason, error);
+  }
+}
+
 - (void)setCustomDimensions:(nullable NSArray *)customDimensions {
     for (NSDictionary* customDimension in customDimensions) {
         [[PiwikTracker sharedInstance]
